@@ -1,0 +1,70 @@
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+/**
+ * 
+ * @author stephaniie
+ *
+ */
+
+public class VentanaServidor extends JFrame {
+	
+	public JTextField campoTexto = new JTextField();
+	public JTextArea areaTexto = new JTextArea();
+	
+	private Color cian = new Color(224, 255, 255);
+	private Color dodger = new Color(30, 144, 255);
+	
+	private Color gris = new Color(223, 223, 223);
+	private Color azul = new Color(70, 130, 180);
+	
+	/**
+	 * Constructo de la clase donde se inicializan todos los componentes
+	 * de la ventana principal del servidor
+	 */
+	public VentanaServidor(){
+		super.setTitle("Usuario 1");	// Titulo de la ventana
+		
+		super.setDefaultCloseOperation(EXIT_ON_CLOSE);			
+		cargarControles();	//  cargar los componentes
+		super.setSize(300, 320);	// Tamaño de la ventana
+		super.setLocationRelativeTo(null);
+		super.setVisible(true);
+	}
+	
+	/**
+	 * Metodo que tiene la funcion de cargar los controles
+	 */
+	private void cargarControles(){
+		campoTexto.setEditable(false);	
+		add(campoTexto, BorderLayout.NORTH);	// texto en parte superiorr
+		
+		areaTexto.setEditable(false);
+		add(new JScrollPane(areaTexto), BorderLayout.CENTER);
+		areaTexto.setBackground(cian);	// background blanco al areaTexto
+		areaTexto.setForeground(azul);	// color letra en el areaTexto
+		campoTexto.setForeground(dodger);	// color del mensaje a enviar
+	}
+	
+	/**
+	 * Metodo para mostrar texto 
+	 */
+	public void mostrarMensaje(String mensaje){
+		areaTexto.append(mensaje + "\n");
+	}
+	
+	/**
+	 * Metodo para habilitar el texto en campoTexto
+	 */
+	public void habilitarTexto(boolean editable){
+		campoTexto.setEditable(editable);
+	}
+
+}
