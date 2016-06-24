@@ -1,0 +1,17 @@
+package main;
+
+import singlenton.SinglentonSer;
+
+/**
+ * 
+ * @author stephaniie
+ * main para conectar con el servidor
+ *
+ */
+public class PrincipalServidor {
+	
+	public static void main(String[] args){
+		SinglentonSer ser = SinglentonSer.instancia();
+		ser.conectar();		
+	}	
+}
