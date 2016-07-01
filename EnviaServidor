@@ -1,0 +1,70 @@
+package threads;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.SocketException;
+
+import view.VentanaServidor;
+
+/**
+ * 
+ * @author stephaniie
+ *
+ */
+public class ThreadEnviaServ implements Runnable{
+	private VentanaServidor vtn;
+	private ObjectOutputStream salida;
+	private String mensaje;
+	private Socket conexion;
+	
+	public ThreadEnviaServ(Socket conexion, VentanaServidor vtn){
+		this.conexion = conexion;
+		this.vtn = vtn;
+		
+		// Evento para mensaje
+		vtn.campoTexto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event){
+				mensaje = event.getActionCommand();
+				enviarDatos(mensaje);	// Se envia el mensaje
+				vtn.campoTexto.setText("");	// Borra el texto del enterfield
+			}						
+		}
+		);				
+	}
+	
+	// Enviar mensaje
+	private void enviarDatos(String mensaje){
+		try{
+			salida.writeObject("Usuario 1: " +mensaje);
+			salida.flush();	// Flush salida a cliente
+			vtn.mostrarMensaje("Usuario 1: " + mensaje);
+		}
+		catch (IOException ioException){
+			vtn.mostrarMensaje("Error al mostrar mensaje");			
+		}
+	}
+	
+	/**
+	 * 
+	 * @param mensaje, envia con hilo en mensaje
+	 */
+	public void mostrarMensaje(String mensaje) {
+		vtn.areaTexto.append(mensaje);
+	}
+
+	@Override
+	public void run() {
+		try {
+			salida = new ObjectOutputStream(conexion.getOutputStream());
+			salida.flush();
+		} catch (SocketException ex) {
+		} catch ( IOException ioException) {
+			ioException.printStackTrace();
+		} catch (NullPointerException ex) {		
+		}		
+	}
+
+}
