@@ -1,0 +1,70 @@
+package threads;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import view.VentanaCliente;
+
+/**
+ * 
+ * @author stephaniie
+ *
+ */
+public class ThreadRecibeCli implements Runnable{
+	private VentanaCliente cli;
+	private String mensaje;
+	private ObjectInputStream entrada;
+	private Socket cliente;
+	
+	// Inicializar servidor de chat
+	public ThreadRecibeCli(Socket cliente, VentanaCliente cli){
+		this.cliente = cliente;
+		this.cli = cli;	
+	}
+	
+	public void mostrarMensaje(String mensaje) {
+		cli.areaTexto.append(mensaje);
+	}
+	
+	public void run (){
+		try {
+			entrada = new ObjectInputStream(cliente.getInputStream());
+		} catch (IOException e) {
+			Logger.getLogger(ThreadRecibeCli.class.getName()).log(Level.SEVERE, null, e);
+		}
+		do {	// Recibe mensaje de servidor
+			try {	// Leer el mensaje y mostrarlo
+				mensaje = (String) entrada.readObject();	
+				cli.mostrarMensaje(mensaje);
+			}
+			catch(SocketException e){
+			}
+			catch (EOFException eofException) {
+				cli.mostrarMensaje("Conexión finalizada");
+				break;
+			}
+			catch (IOException e) {
+				Logger.getLogger(ThreadRecibeCli.class.getName()).log(Level.SEVERE, null, e);
+			}
+			catch (ClassNotFoundException e) {
+				cli.mostrarMensaje("mensaje desconocido");
+			}	
+			
+		} while (!mensaje.equals("Usuario 2:  TERMINATE"));	//Termina conexion
+		
+		try {
+			entrada.close();	// Termina Stream
+			cliente.close();	// Termina socket
+		} catch (IOException ioException) {
+			ioException.printStackTrace();
+		}
+		cli.mostrarMensaje("Fin de la conexion");
+		System.exit(0);
+	}
+
+}
